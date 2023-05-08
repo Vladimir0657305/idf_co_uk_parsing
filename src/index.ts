@@ -31,10 +31,11 @@ app.get('/', async (req, res) => {
         const findHref = (node) => {
             if (node.tagName === 'a') {
                 const href = node.attrs.find((attr) => attr.name === 'href');
-                const viewButtonAttr = node.attrs.find((attr) => attr.name === 'class' && attr.value.includes('button blue view-button svelte-divrqn'));
-                if (href && viewButtonAttr) {
-                    const fullHref = `https://www.phin.org.uk${href.value}`;
-                    hrefs.push(href.value);
+                const viewLinknAttr = node.attrs.find((attr) => attr.name === 'class' && attr.value.includes('docresults'));
+                if (href && viewLinknAttr) {
+                    const fullHref = `https://www.idf.co.uk${href.value}`;
+                    // hrefs.push(href.value);
+                    console.log(href.value);
                 }
             }
             if (node.childNodes) {
@@ -52,7 +53,7 @@ app.get('/', async (req, res) => {
             const email = findEmail(node, 'center svelte-11uoyco');
             const phone = findPhone(node, 'center svelte-11uoyco');
 
-            parsedData.push(`${counter},${title},${subSpecialities},${email},${phone}`);
+            // parsedData.push(`${counter},${title},${subSpecialities},${email},${phone}`);
 
             console.log(parsedData);
             counter++;
@@ -157,20 +158,20 @@ app.get('/', async (req, res) => {
 
         findHref(document);
 
-        while (page <= 1) {
-            while (hrefs.length != 0) {
-                const nextUrl = `https://www.phin.org.uk/${hrefs.shift()}`;
-                console.log('PAGE=>', page, 'NEXTURL=>', nextUrl);
-                const dataNext = await rotateWithBrightData(nextUrl);
-                const documentNext = parse5.parse(dataNext);
-                findData(documentNext);
-            }
-            page++;
-            const nextPageUrl = url + `&s_page_number=${page}`;
-            data = await rotateWithBrightData(nextPageUrl);
-            const nextPageData = parse5.parse(data);
-            findHref(nextPageData);
-        }
+        // while (page <= 1) {
+        //     while (hrefs.length != 0) {
+        //         const nextUrl = `https://www.phin.org.uk/${hrefs.shift()}`;
+        //         console.log('PAGE=>', page, 'NEXTURL=>', nextUrl);
+        //         const dataNext = await rotateWithBrightData(nextUrl);
+        //         const documentNext = parse5.parse(dataNext);
+        //         findData(documentNext);
+        //     }
+        //     page++;
+        //     const nextPageUrl = url + `&s_page_number=${page}`;
+        //     data = await rotateWithBrightData(nextPageUrl);
+        //     const nextPageData = parse5.parse(data);
+        //     findHref(nextPageData);
+        // }
 
         // Convert parsedData array to CSV format and write to file
         const csvData = parsedData.map((data) => {
