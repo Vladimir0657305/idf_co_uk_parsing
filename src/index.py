@@ -8,29 +8,31 @@ from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 import os
 import dotenv
+import requests
 
 from dotenv import load_dotenv
 load_dotenv()
+# os.environ['PROXY_USERNAME'] = 'brd-customer-hl_db7162d7-zone-unblocker'
+# os.environ['PROXY_PASSWORD'] = '2ksf5kpyn6pk'
+proxy_username = os.environ.get('PROXY_USERNAME')
+proxy_password = os.environ.get('PROXY_PASSWORD')
+
 
 PROXY_HOST = "zproxy.lum-superproxy.io"
 PROXY_PORT = "22225"
 PROXY_USER = os.getenv('PROXY_USERNAME')
 PROXY_PASS = os.getenv('PROXY_PASSWORD')
 
-options = Options()
-options.add_argument("--proxy-server=http://{}:{}@{}".format(PROXY_USER, PROXY_PASS, PROXY_HOST + ":" + PROXY_PORT))
-options.add_argument("start-maximized")
-options.add_argument('disable-infobars')
-options.add_argument('--disable-extensions')
-options.add_argument('--disable-dev-shm-usage')
-options.add_argument('--disable-browser-side-navigation')
-options.add_argument('--disable-gpu')
-options.add_argument('--ignore-certificate-errors')
-options.add_argument('--no-sandbox')
+proxy = Proxy({
+    'proxyType': 'MANUAL',
+    'httpProxy': f"{PROXY_USER}:{PROXY_PASS}@{PROXY_HOST}:{PROXY_PORT}"
+})
 
-SERVICE_PATH = 'C:/Program Files/Pyton/chromedriver.exe'
-service = Service(SERVICE_PATH)
-driver = webdriver.Chrome(service=service, options=options)
+chrome_options = Options()
+chrome_options.add_argument('--ignore-certificate-errors')
+chrome_options.add_argument("--proxy-server=http://%s" % proxy.noProxy)
+
+driver = webdriver.Chrome(options=chrome_options)
 
 def get_doctors_links(page):
     url = f'https://www.idf.co.uk/patients/find-a-doctor.aspx?Specialty=20&SubSpecialty=0&AreaCode=W1G&SearchCriteria=London&PageNumber={page}'
