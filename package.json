@@ -1,5 +1,5 @@
 {
-  "name": "gps_in_London",
+  "name": "idf_co_uk_parsing",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,16 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cobalt-intelligence/rotate-ip-addresses-in-proxies.git"
+    "url": "git+https://github.com/Vladimir0657305/idf_co_uk_parsing.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/cobalt-intelligence/rotate-ip-addresses-in-proxies/issues"
+    "url": ""
   },
-  "homepage": "https://github.com/cobalt-intelligence/rotate-ip-addresses-in-proxies#readme",
+  "homepage": "https://github.com/Vladimir0657305/idf_co_uk_parsing.git#readme",
   "dependencies": {
-    "@degjs/dom-utils": "^3.0.0",
     "@types/parse5-htmlparser2-tree-adapter": "^7.0.0",
     "csv-writer": "^1.6.0",
     "dotenv": "^16.0.3",
