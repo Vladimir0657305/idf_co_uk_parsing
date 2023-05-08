@@ -36,6 +36,7 @@ async function parseDoctorsList(page: number): Promise<string[]> {
 
     anchorElements.forEach((element) => {
         if (element.hasAttribute('href')) {
+            console.log(element.getAttribute('href'));
             doctors.push(element.getAttribute('href')!);
         }
     });
@@ -45,7 +46,7 @@ async function parseDoctorsList(page: number): Promise<string[]> {
 
 async function main() {
     const doctorsList = await parseDoctorsList(1);
-    console.log(doctorsList);
+    // console.log(doctorsList);
 }
 
 main();
