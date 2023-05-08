@@ -1,3 +1,5 @@
+Запуск через Оперу
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -15,6 +17,9 @@ from selenium.common.exceptions import TimeoutException
 
 from dotenv import load_dotenv
 load_dotenv()
+# opera_path = "C:\Users\Dir\AppData\Local\Programs\Opera\launcher.exe"
+opera_path = "C:\\Users\\Dir\\AppData\\Local\\Programs\\Opera\\launcher.exe"
+opera_driver_path = "C:/Program Files/Python/operadriver.exe"
 
 # proxy_username = os.getenv('PROXY_USERNAME')
 # proxy_password = os.getenv('PROXY_PASSWORD')
@@ -30,10 +35,13 @@ proxy = Proxy({
 })
 
 chrome_options = Options()
+chrome_options.binary_location = opera_path
 chrome_options.add_argument('--ignore-certificate-errors')
 chrome_options.add_argument("--proxy-server=http://%s" % proxy.no_proxy)
 
-driver = webdriver.Chrome(service=Service(executable_path="C:/Program Files/Pyton/chromedriver"), options=chrome_options)
+# driver = webdriver.Chrome(service=Service(executable_path="C:/Program Files/Pyton/chromedriver"), options=chrome_options)
+# driver = webdriver.Opera(executable_path="C:/Program Files/Pyton/operadriver.exe", options=chrome_options)
+driver = webdriver.Chrome(service=Service(executable_path=opera_driver_path), options=chrome_options)
 
 # def get_doctors_links(page):
 #     url = f'https://www.idf.co.uk/patients/find-a-doctor.aspx?Specialty=20&SubSpecialty=0&AreaCode=W1G&SearchCriteria=London&PageNumber={page}'
