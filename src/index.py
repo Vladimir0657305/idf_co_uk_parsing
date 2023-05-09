@@ -118,10 +118,12 @@ with open('doctors.csv', 'w', newline='', encoding='utf-8') as f:
         specialty = 'No specialty data'
     try:
         address_label = soup.find('li', {'id': 'ctl00_MainContentPlaceHolder_AddressLi'})
-        address_items = address_label.find_all()
+        address_items = address_label.contents
         address = ''.join([str(item).strip() for item in address_items if not (item.name == 'span' and item.get('class') == 'strong')])
-        address = re.sub('<[^<]+?>', '', address)
-        address = address.replace('\n', ' ')
+        soup_address = BeautifulSoup(address, 'html.parser')
+        for strong_tag in soup_address.find_all('span', {'class': 'strong'}):
+            strong_tag.decompose()
+        address = soup_address.get_text().strip()
     except AttributeError:
         address = 'No address data'
     try:
