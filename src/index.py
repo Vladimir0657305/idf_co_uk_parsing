@@ -13,14 +13,24 @@ import dotenv
 import requests
 import time
 from selenium.common.exceptions import TimeoutException
+from urllib.parse import urljoin
 
 # Загрузка настроек из файла .env
 from dotenv import load_dotenv
 load_dotenv()
 
+base_url = "https://www.idf.co.uk/"
+
+# Получаем общее количество страниц
+url_page = "https://www.idf.co.uk/patients/find-a-doctor.aspx?Specialty=20&SubSpecialty=0&AreaCode=W1G&SearchCriteria=London&PageNumber=1"
+response = requests.get(url_page)
+soup_page = BeautifulSoup(response.content, 'html.parser')
+pages = soup_page.find('p', class_='center').find_all('a')
+last_page = int(pages[-1].get_text(strip=True))
+
 # Получение учетных данных прокси-сервера из переменных окружения
-proxy_username = os.getenv('PROXY_USERNAME')
-proxy_password = os.getenv('PROXY_PASSWORD')
+PROXY_USERNAME = os.getenv('PROXY_USERNAME')
+PROXY_PASSWORD = os.getenv('PROXY_PASSWORD')
 # proxy_username = 'lum-customer-CUST_ID-zone-ZONE_NAME'
 # proxy_password = 'PASSWORD'
 
@@ -30,7 +40,7 @@ PROXY_PORT = "22225"
 
 proxy = Proxy({
     'proxyType': 'MANUAL',
-    'httpProxy': f"{proxy_username}:{proxy_password}@{PROXY_HOST}:{PROXY_PORT}"
+    'httpProxy': f"{PROXY_USERNAME}:{PROXY_PASSWORD}@{PROXY_HOST}:{PROXY_PORT}"
 })
 
 # Опции браузера Chrome
@@ -61,11 +71,19 @@ wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div.section')))
 # wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'li.list-recent-events')))
 
 # Получение HTML-кода страницы с результатами поиска
-print(proxy_username, proxy_password)
 html = driver.page_source
 soup = BeautifulSoup(html, 'html.parser')
 links = soup.select('.docresults a[href]')
-doctor_links = [link['href'] for link in links]
+doctor_links = [urljoin(base_url, link['href']) for link in links]
+print(doctor_links)
+
+# for href in hrefs:
+#     full_url = urljoin(base_url, href)
+#     print(full_url)
+
+# for link in links:
+#     print(link['href'])
+
 
 # Закрытие браузера
 driver.quit()
