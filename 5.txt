@@ -1,0 +1,59 @@
+# Создаем цикл для перебора всех страниц
+for page in range(1, last_page+1):
+    # Формируем ссылку на текущую страницу
+    url = f'https://www.idf.co.uk/patients/find-a-doctor.aspx?Specialty=20&SubSpecialty=0&AreaCode=W1G&SearchCriteria=London&PageNumber={page}'
+
+    # Загружаем страницу
+    driver.get(url)
+
+    # Ожидание загрузки страницы
+    wait = WebDriverWait(driver, 10)
+    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div.section')))
+
+    # Получение HTML-кода страницы с результатами поиска
+    html = driver.page_source
+    soup = BeautifulSoup(html, 'html.parser')
+    links = soup.select('.docresults a[href]')
+    doctor_links = [urljoin(base_url, link['href']) for link in links]
+
+    # Добавляем найденные ссылки на врачей на текущей странице в общий список
+    all_doctor_links.extend(doctor_links)
+
+# Создаем цикл для перебора всех ссылок на врачей
+for doctor_link in all_doctor_links:
+    # Загружаем страницу врача
+    driver.get(doctor_link)
+    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div.content3')))
+# Создаем объект BeautifulSoup
+html_code = driver.page_source
+soup = BeautifulSoup(html_code, 'html.parser')
+
+# Получаем имя и квалификацию
+name = soup.select_one('h2.memberprofile').text.strip()
+qualifications = soup.select_one('span.qualifications').text.strip()
+
+# Получаем специальность
+specialty_label = soup.select_one('span.strong', text='Specialties:')
+specialty = specialty_label.find_next_sibling().text.strip()
+
+# Получаем адрес, телефон, почту и сайт
+address_label = soup.select_one('span.strong', text='Primary Practice:')
+address = address_label.find_next_sibling().strip()
+telephone_label = soup.select_one('span.strong', text='Appointments Telephone:')
+telephone = telephone_label.find_next_sibling().strip()
+email_label = soup.select_one('span.strong', text='Email Address:')
+email = email_label.find_next_sibling().select_one('a').text.strip()
+website_label = soup.select_one('span.strong', text='Website:')
+website = website_label.find_next_sibling().select_one('a')['href']
+
+# Выводим результаты
+print(f"Name: {name}")
+print(f"Qualifications: {qualifications}")
+print(f"Specialty: {specialty}")
+print(f"Address: {address}")
+print(f"Telephone: {telephone}")
+print(f"Email: {email}")
+print(f"Website: {website}")
+
+# Закрытие браузера
+driver.quit()
